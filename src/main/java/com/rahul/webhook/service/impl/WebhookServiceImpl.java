@@ -3,6 +3,7 @@ package com.rahul.webhook.service.impl;
 import com.rahul.webhook.dto.*;
 import com.rahul.webhook.entity.*;
 import com.rahul.webhook.exception.ResourceNotFoundException;
+import com.rahul.webhook.queue.WebhookQueuePublisher;
 import com.rahul.webhook.queue.WebhookQueueService;
 import com.rahul.webhook.repository.WebhookDeliveryRepository;
 import com.rahul.webhook.repository.WebhookEventRepository;
@@ -27,7 +28,7 @@ public class WebhookServiceImpl implements WebhookService {
     private final WebhookEventRepository webhookEventRepository;
     private final WebhookDeliveryRepository webhookDeliveryRepository;
     private final WebhookQueueService webhookQueueService;
-
+    private final WebhookQueuePublisher webhookQueuePublisher;
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Override
@@ -65,7 +66,7 @@ public class WebhookServiceImpl implements WebhookService {
 
         delivery = webhookDeliveryRepository.save(delivery);
 
-        webhookQueueService.enqueue(delivery.getId());
+        webhookQueuePublisher.enqueueAfterCommit(delivery.getId());
 
         return new WebhookEventResponse(event.getId(), delivery.getId(), webhook.getId(), event.getEventType(), delivery.getStatus().name());
     }
@@ -103,17 +104,19 @@ public class WebhookServiceImpl implements WebhookService {
         WebhookDelivery delivery = webhookDeliveryRepository.findById(deliveryId).orElseThrow(() -> new ResourceNotFoundException("Delivery not found: " + deliveryId));
 
         if (delivery.getStatus() != DeliveryStatus.DEAD_LETTER) {
+
             throw new IllegalArgumentException("Only DEAD_LETTER deliveries can be manually retried");
         }
 
         delivery.setStatus(DeliveryStatus.PENDING);
+
         delivery.setNextAttemptAt(null);
         delivery.setLastError(null);
         delivery.setLastHttpStatus(null);
 
         webhookDeliveryRepository.save(delivery);
 
-        webhookQueueService.enqueue(delivery.getId());
+        webhookQueuePublisher.enqueueAfterCommit(delivery.getId());
     }
 
 

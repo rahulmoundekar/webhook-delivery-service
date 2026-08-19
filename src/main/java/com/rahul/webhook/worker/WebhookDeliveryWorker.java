@@ -2,6 +2,7 @@ package com.rahul.webhook.worker;
 
 import com.rahul.webhook.entity.DeliveryStatus;
 import com.rahul.webhook.entity.WebhookDelivery;
+import com.rahul.webhook.queue.WebhookQueuePublisher;
 import com.rahul.webhook.repository.WebhookDeliveryRepository;
 import com.rahul.webhook.security.WebhookSignatureService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class WebhookDeliveryWorker {
     private final RedisTemplate<String, String> redisTemplate;
     private final WebhookDeliveryRepository deliveryRepository;
     private final WebhookSignatureService signatureService;
-
+    private final WebhookQueuePublisher webhookQueuePublisher;
     private final RestClient restClient = RestClient.create();
 
     // We'll implement the scheduled polling in the next small step.
@@ -136,11 +137,12 @@ public class WebhookDeliveryWorker {
         for (WebhookDelivery delivery : deliveries) {
 
             delivery.setStatus(DeliveryStatus.PENDING);
+
             delivery.setNextAttemptAt(null);
 
             deliveryRepository.save(delivery);
 
-            redisTemplate.opsForList().rightPush(QUEUE_NAME, delivery.getId().toString());
+            webhookQueuePublisher.enqueueAfterCommit(delivery.getId());
         }
     }
 }
