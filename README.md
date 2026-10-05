@@ -16,6 +16,19 @@
 - Manual replay and after-commit publishing
 - Receiver-side signature verification
 
+## 🧭 Engineering Case Study
+
+| Concern | Design decision | Why it matters |
+|---|---|---|
+| Durability | Persist event + delivery state before queueing | Delivery intent survives process restarts |
+| Database/queue consistency | After-commit publishing | Avoids queueing work for rolled-back transactions |
+| Security | HMAC-SHA256 signatures | Receivers can verify payload authenticity |
+| Failure recovery | Bounded retry + jitter + DEAD_LETTER + replay | Unavailable receivers do not block the producer |
+
+<p align="center">
+  <img src="assets/architecture.svg" width="100%" alt="Webhook delivery architecture"/>
+</p>
+
 ## Core Flow
 
 ```text
