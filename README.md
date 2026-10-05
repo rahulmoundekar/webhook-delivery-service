@@ -1,8 +1,20 @@
-# Webhook Delivery Service
+# 🔗 Webhook Delivery Service
 
-Spring Boot implementation of **API #4 — Webhook Delivery System** from the provided *12 APIs Every Backend Developer Should Build Once* specification.
+<p align="center"><strong>Reliable asynchronous webhook delivery with signing, retries and dead-letter recovery.</strong></p>
 
-The project focuses on reliable webhook delivery using signed payloads, asynchronous queueing, PostgreSQL delivery logging, exponential backoff with jitter, bounded retries, and dead-letter recovery. fileciteturn3file0L151-L180
+<p align="center"><img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 21"/> <img src="https://img.shields.io/badge/Spring_Boot-4.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" alt="Spring Boot"/> <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis"/> <img src="https://img.shields.io/badge/HMAC--SHA256-111827?style=for-the-badge" alt="HMAC-SHA256"/></p>
+
+> A webhook delivery system designed around the failure path: durable delivery state, asynchronous processing, bounded retries, jitter and manual dead-letter recovery.
+
+## 🎯 What This Project Demonstrates
+
+- HMAC-SHA256 signed webhook payloads
+- PostgreSQL delivery history
+- Redis queueing and background workers
+- Exponential backoff with jitter
+- Bounded retries and DEAD_LETTER state
+- Manual replay and after-commit publishing
+- Receiver-side signature verification
 
 ## Core Flow
 
@@ -44,7 +56,7 @@ Target Webhook
                 Manual retry
 ```
 
-The PDF identifies HMAC-SHA256 signing, exponential backoff with jitter, and dead-letter recovery as the key reliability requirements. fileciteturn3file0L163-L179
+The PDF identifies HMAC-SHA256 signing, exponential backoff with jitter, and dead-letter recovery as the key reliability requirements.
 
 ## Features
 
@@ -170,7 +182,7 @@ Attempt 4 -> approximately 16–18 sec
 Attempt 5 -> DEAD_LETTER
 ```
 
-This follows the source specification's retry strategy. fileciteturn3file0L168-L176
+This follows the source specification's retry strategy.
 
 ## Database Model
 
@@ -226,7 +238,7 @@ Webhook
 - Lombok
 - Maven
 
-The source PDF specifies Node.js or Go, Redis/SQS, HMAC-SHA256, and PostgreSQL; this project adapts the same design concepts to Java/Spring Boot. fileciteturn3file0L153-L160
+The source PDF specifies Node.js or Go, Redis/SQS, HMAC-SHA256, and PostgreSQL; this project adapts the same design concepts to Java/Spring Boot.
 
 ## Configuration
 
