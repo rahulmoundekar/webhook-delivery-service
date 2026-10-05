@@ -69,8 +69,6 @@ Target Webhook
                 Manual retry
 ```
 
-The PDF identifies HMAC-SHA256 signing, exponential backoff with jitter, and dead-letter recovery as the key reliability requirements.
-
 ## Features
 
 - Webhook registration
