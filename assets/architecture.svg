@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="t d">
+<title id="t">Webhook delivery architecture</title><desc id="d">Webhook event persisted before queueing, asynchronous worker signs and delivers with retries and dead letter recovery.</desc>
+<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#1b1208"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs>
+<rect width="1200" height="420" rx="24" fill="url(#g)"/><text x="55" y="55" fill="#f8fafc" font-size="25" font-family="Arial" font-weight="700">Webhook Delivery: Design for Failure</text><text x="55" y="82" fill="#a8a29e" font-size="14" font-family="Arial">Delivery state is durable; sending is asynchronous; recovery is explicit.</text>
+<g font-family="Arial" font-size="15" text-anchor="middle"><g fill="#0f172a" stroke="#f59e0b" stroke-width="2"><rect x="45" y="145" width="175" height="95" rx="16"/><rect x="270" y="145" width="175" height="95" rx="16"/><rect x="495" y="145" width="175" height="95" rx="16"/><rect x="720" y="145" width="175" height="95" rx="16"/><rect x="945" y="145" width="210" height="95" rx="16"/></g>
+<text x="132" y="183" fill="#fbbf24" font-weight="700">Persist</text><text x="132" y="207" fill="#cbd5e1">event + PENDING</text>
+<text x="357" y="183" fill="#fbbf24" font-weight="700">After Commit</text><text x="357" y="207" fill="#cbd5e1">enqueue only after DB commit</text>
+<text x="582" y="183" fill="#fbbf24" font-weight="700">Redis Queue</text><text x="582" y="207" fill="#cbd5e1">async handoff</text>
+<text x="807" y="183" fill="#fbbf24" font-weight="700">Worker + HMAC</text><text x="807" y="207" fill="#cbd5e1">sign + deliver</text>
+<text x="1050" y="183" fill="#fbbf24" font-weight="700">Recover</text><text x="1050" y="207" fill="#cbd5e1">retry → D.L. → replay</text></g>
+<g stroke="#64748b" stroke-width="3"><path d="M220 193h50"/><path d="M445 193h50"/><path d="M670 193h50"/><path d="M895 193h50"/></g>
+<text x="600" y="300" text-anchor="middle" fill="#38bdf8" font-size="18" font-family="Arial" font-weight="700">Delivery state machine</text><text x="600" y="328" text-anchor="middle" fill="#cbd5e1" font-size="14" font-family="Arial">PENDING → DELIVERING → DELIVERED or RETRYING → DEAD_LETTER → manual retry</text>
+<text x="55" y="380" fill="#64748b" font-size="12" font-family="Arial">Java 21 · Spring Boot · PostgreSQL · Redis · HMAC-SHA256</text></svg>
